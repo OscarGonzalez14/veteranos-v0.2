@@ -132,6 +132,57 @@ require_once("../config/conexion.php");
   }
 
 
+
+  public function recibirOrdenesVeteranos(){
+    $conectar= parent::conexion();
+    parent::set_names();
+    date_default_timezone_set('America/El_Salvador'); 
+    $hoy = date("Y-m-d");
+    $hora = date('H:i:s');
+    $detalle_recibidos = array();
+    $detalle_recibidos = json_decode($_POST["arrayOrdenesBarcode"]);
+    $usuario = $_POST["usuario"];
+    $tipo_accion = $_POST['tipo_accion'];
+    $ubicacion = $_POST['ubicacion_orden'];
+
+    $estado ='';
+    
+    if ($tipo_accion == 'recibir_veteranos') {
+       $estado = 'Recibido';
+    }
+    $correlativo = 12345;
+    $accion = 'Ingreso';
+    $sql = 'insert into acciones_ordenes_veteranos values(null,?,?,?,?,?,?);';
+    $sql=$conectar->prepare($sql);
+    $sql->bindValue(1, $correlativo);
+    $sql->bindValue(2, $hoy);
+    $sql->bindValue(3, $hora);
+    $sql->bindValue(4, $usuario);
+    $sql->bindValue(5, $accion);
+    $sql->bindValue(6, $ubicacion);
+    $sql->execute();
+
+    /*foreach ($detalle_recibidos as $k => $v) {
+      
+      $codigoOrden = $v->n_orden;
+
+      $sql2 = "update orden_lab set estado_aro='2' where codigo=?;";
+      $sql2=$conectar->prepare($sql2);
+      $sql2->bindValue(1, $codigoOrden);
+      $sql2->execute();
+
+      $sql = "insert into acciones_orden values(null,?,?,?,?,?);";
+      $sql=$conectar->prepare($sql);
+      $sql->bindValue(1, $hoy);
+      $sql->bindValue(2, $usuario);
+      $sql->bindValue(3, $codigoOrden);
+      $sql->bindValue(4, $accion);
+      $sql->bindValue(5, $destino);
+      $sql->execute();
+    }*/
+  }
+
+
 }
 
 /***************** REPORTERIA LABORATORIO **********************************

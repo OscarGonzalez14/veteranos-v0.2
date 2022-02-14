@@ -125,8 +125,11 @@ case 'get_ordenes_pendientes_lab':
     if ($_POST['tipo_accion']=='ing_lab') {
       $ordenes->recibirOrdenesLabBarcode();
       $mensaje = "Ok";
-    }elseif ($_POST['tipo_accion']=='finalizar_lab') {
+    }elseif ($_POST['tipo_accion']=='finalizar_lab') {///FINALIZAR LAB
       $ordenes->finalizarOrdenesLab();
+      $mensaje = "Ok";
+    }elseif ($_POST['tipo_accion']=='recibir_veteranos') {
+      $ordenes->recibirOrdenesVeteranos();
       $mensaje = "Ok";
     }
     echo json_encode($mensaje);    

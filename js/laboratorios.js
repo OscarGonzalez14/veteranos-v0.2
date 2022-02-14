@@ -524,7 +524,25 @@ function registrarBarcodeOrdenes(){
 
   var datatables = '';
   var mjs ='';
-  
+  var fecha_orden = '';
+  var ubicacion_orden = ''
+
+  if(tipo_accion=='recibir_veteranos'){
+    fecha_orden = $("#fecha_accion_vet").val();
+    ubicacion_orden = $("#ubicacion_veteranos").val();
+    
+    if (ubicacion_orden=='') {
+      Swal.fire({
+        position: 'top-center',
+        icon: 'error',
+        title: 'El campo ubicacion es obligatorio',
+        showConfirmButton: true,
+        timer: 1500
+      });
+      return false;
+    }
+  }
+
   let usuario = $("#usuario").val();
   let n_ordenes = items_barcode.length;
 
@@ -538,21 +556,23 @@ function registrarBarcodeOrdenes(){
       });
       return false;
   }
-
+  
   $.ajax({
       url:"../ajax/laboratorios.php?op=procesar_ordenes_barcode",
       method:"POST",
-      data : {'arrayOrdenesBarcode':JSON.stringify(items_barcode),'usuario':usuario,'tipo_accion':tipo_accion},
+      data : {'arrayOrdenesBarcode':JSON.stringify(items_barcode),'usuario':usuario,'tipo_accion':tipo_accion,'fecha_orden':fecha_orden,'ubicacion_orden':ubicacion_orden},
       cache:false,
       dataType:"json",
       success:function(data){
       if (tipo_accion=='ing_lab') {
-        //$("#ordenes_pendientes_lab").DataTable().ajax.reload();
         msj =' ordenes recibidas exitosamente';
       }else if(tipo_accion=='finalizar_lab'){
         $("#ordenes_procesando_lab").DataTable().ajax.reload();
         msj = ' ordenes finalizadas exitosamente';
-      }  
+      }else if(tipo_accion=='recibir_veteranos'){
+        msj = ' ordenes recibidas exitosamente';
+        $('#modal_acciones_veteranos').modal('hide');
+      }
         
       items_barcode = [];
       $("#barcode_ingresos_lab").modal("hide");
@@ -567,6 +587,14 @@ function registrarBarcodeOrdenes(){
     }//Fin success
     });
 
+}
+
+
+function input_focus_clearb(){
+  $("#reg_ingresos_barcode").val("");
+  $('#modal_acciones_veteranos').on('shown.bs.modal', function() {
+  $('#reg_ingresos_barcode').focus();
+  });
 }
 
 init();
