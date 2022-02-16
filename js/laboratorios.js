@@ -37,8 +37,8 @@ document.querySelectorAll(".barcode_actions_vets").forEach(i => i.addEventListen
     items_barcode = [];    
     input_focus_clearb();
     getCorrelativoAccionVet();
-    $("#ubicacion_veteranos").val("");
-
+    show_items_barcode_lab();  
+    
 }));
 
 function listar_ordenes_pend_lab(){
@@ -705,6 +705,7 @@ function listar_ordenes_entregas_vet(){
     }, //cerrando language
   });
 }
+
 function input_focus_clearb(){
   $("#reg_ingresos_barcode").val("");
   $('#modal_acciones_veteranos').on('shown.bs.modal', function() {
@@ -725,6 +726,7 @@ function downloadExcelEntregas(title,fecha){
   table2excel.export(document.getElementById('tabla_acciones_veterans'),titulo);
 }
 
+
 function downloadExcelRecibidosVet(title,fecha){
   let titulo = fecha+"_"+title;
   let tablaExport = document.getElementById("recibidas_ordenes_lab");
@@ -733,7 +735,6 @@ function downloadExcelRecibidosVet(title,fecha){
     alerts_productos("warning", "Debe desplegar la tabla para poder ser descargada");
     return false;
   }
-
   let table2excel = new Table2Excel();
   table2excel.export(document.getElementById('recibidas_ordenes_lab'),titulo);
 }

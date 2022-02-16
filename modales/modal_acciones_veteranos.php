@@ -10,7 +10,7 @@
       <!-- Modal body -->
       <div class="modal-body">
         <div class="row">
-       
+
         <div class="col-sm-4">
            <label>Codigo orden</label>
           <input type="text" class="form-control" id="reg_ingresos_barcode" onchange="getOrdenBarcode()">

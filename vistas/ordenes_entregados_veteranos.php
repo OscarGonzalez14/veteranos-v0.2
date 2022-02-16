@@ -43,7 +43,7 @@ $categoria_usuario = $_SESSION["categoria"];
 
       <?php include 'ordenes/header_status_veteranos.php'; ?>
 
-        <button class="btn btn-success barcode_actions_vets float-right barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()' style="border: solid 1px #1f2e50"><i class="fas fa-upload"></i> Entregar</button>
+        <button class="btn btn-success float-right barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()' style="border: solid 1px #1f2e50"><i class="fas fa-upload"></i> Entregar</button>
         <h5 style="font-size: 16px; text-align: center;font-weight: bold;color: green">ORDENES ENTREGADAS</h5>
         <table width="100%" class="table-hover table-bordered" id="ordenes_entregados_veteranos_data"  data-order='[[ 0, "desc" ]]'> 
               
