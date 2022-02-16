@@ -715,7 +715,7 @@ function input_focus_clearb(){
 function downloadExcelEntregas(title,fecha){
   let titulo = fecha+"_"+title;
   let tablaExport = document.getElementById("tabla_acciones_veterans");
-  console.log(tablaExport);
+  //console.log(tablaExport);
   if(tablaExport == null || tablaExport == undefined ){
     alerts_productos("warning", "Debe desplegar la tabla para poder ser descargada");
     return false;
@@ -723,6 +723,19 @@ function downloadExcelEntregas(title,fecha){
 
   let table2excel = new Table2Excel();
   table2excel.export(document.getElementById('tabla_acciones_veterans'),titulo);
+}
+
+function downloadExcelRecibidosVet(title,fecha){
+  let titulo = fecha+"_"+title;
+  let tablaExport = document.getElementById("recibidas_ordenes_lab");
+  //console.log(tablaExport);
+  if(tablaExport == null || tablaExport == undefined ){
+    alerts_productos("warning", "Debe desplegar la tabla para poder ser descargada");
+    return false;
+  }
+
+  let table2excel = new Table2Excel();
+  table2excel.export(document.getElementById('recibidas_ordenes_lab'),titulo);
 }
 
 init();

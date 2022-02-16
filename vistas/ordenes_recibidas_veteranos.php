@@ -2,6 +2,7 @@
 require_once("../config/conexion.php");
 if(isset($_SESSION["usuario"])){
 $categoria_usuario = $_SESSION["categoria"];
+date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H-i-s");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,6 +17,7 @@ $categoria_usuario = $_SESSION["categoria"];
     require_once('../modales/modal_acciones_veteranos.php');
     require_once('../modales/nueva_orden_lab.php');
     require_once('../modales/aros_en_orden.php');
+    
 ?>
 <style>
   .buttons-excel{
@@ -23,6 +25,8 @@ $categoria_usuario = $_SESSION["categoria"];
     max-width: 150px;
   }
 </style>
+ <script src="../plugins/exportoExcel.js"></script>
+ <script src="../plugins/keymaster.js"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style='font-family: Helvetica, Arial, sans-serif;'>
 <div class="wrapper">

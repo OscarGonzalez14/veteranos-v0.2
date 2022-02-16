@@ -20,8 +20,8 @@
           <input type="text" class="form-control" id="ubicacion_veteranos" placeholder="Ubicación" style="text-transform: uppercase;">
         </div>
       </div>
-        
-      <table class="table-hover table-bordered" style="font-family: Helvetica, Arial, sans-serif;max-width: 100%;text-align: left;margin-top: 5px !important" width="100%">
+      <button type="button" class="btn btn-tool float-right" onClick="downloadExcelRecibidosVet('Recibidos de laboratorio','<?php echo $hoy;?>')" style='margin: 3px'><i class="fas fa-file-excel fa-2x" style="color: green"></i></button>
+      <table class="table-hover table-bordered" style="font-family: Helvetica, Arial, sans-serif;max-width: 100%;text-align: left;margin-top: 5px !important" width="100%" id="recibidas_ordenes_lab">
         <thead style="font-family: Helvetica, Arial, sans-serif;width: 100%;text-align: center;font-size: 12px;" class="bg-dark">
           <th>#</th>
           <th>#Orden</th>
