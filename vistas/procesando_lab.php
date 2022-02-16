@@ -14,14 +14,15 @@ date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H-i-s");
  require_once('../modelos/Ordenes.php');
  $ordenes = new Ordenes();
  $suc = $ordenes->get_opticas();
+
  require_once('../modales/modal_ingresos_lab.php');
  require_once('../modales/nueva_orden_lab.php');
  require_once('../modales/aros_en_orden.php');
 
  ?>
+
 <style>
   .buttons-excel{
-      /*background-color: green !important;*/
       margin: 2px;
       max-width: 150px;
   }
@@ -49,7 +50,7 @@ date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H-i-s");
       <div class="row">
         <div class="col-sm-10"><h5 style="text-align: center">ORDENES EN PROCESO</h5></div>
         <div class="col-sm-2 float-right" style="margin-bottom: 5px !important">         
-         <button class="btn btn-success" class="btn btn-info barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()'><i class="fas fa-clipboard-check"></i> Enviar</button>
+         <button class="btn btn-success" class="btn btn-info barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()'><i class="fas fa-clipboard-check"></i> Finalizar</button>
          </div>
       </div>
         <table width="100%" class="table-hover table-bordered" id="ordenes_procesando_lab"  data-order='[[ 0, "desc" ]]'> 

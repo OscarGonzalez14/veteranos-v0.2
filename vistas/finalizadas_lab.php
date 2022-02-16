@@ -2,6 +2,7 @@
 require_once("../config/conexion.php");
 if(isset($_SESSION["usuario"])){
 $categoria_usuario = $_SESSION["categoria"];
+date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H-i-s");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +14,7 @@ $categoria_usuario = $_SESSION["categoria"];
  require_once('../modelos/Ordenes.php');
  $ordenes = new Ordenes();
  $suc = $ordenes->get_opticas();
+ require_once('../modales/modal_ingresos_lab.php');
  require_once('../modales/nueva_orden_lab.php');
  require_once('../modales/aros_en_orden.php');
 
@@ -24,6 +26,8 @@ $categoria_usuario = $_SESSION["categoria"];
       max-width: 150px;
   }
 </style>
+ <script src="../plugins/exportoExcel.js"></script>
+ <script src="../plugins/keymaster.js"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style='font-family: Helvetica, Arial, sans-serif;'>
 <div class="wrapper">
@@ -43,14 +47,17 @@ $categoria_usuario = $_SESSION["categoria"];
 
       <?php include 'ordenes/header_status_lab.php'; ?>
       <div class="row">
-        <div class="col-sm-12"><h5 style="text-align: center">ORDENES ENVIADAS</h5></div>
+        <div class="col-sm-10"><h5 style="text-align: center">ORDENES FINALIZADAS</h5></div>
+        <div class="col-sm-2 float-right" style="margin-bottom: 5px !important">         
+         <button class="btn btn-success" class="btn btn-info barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()'><i class="fas fa-shipping-fast"></i> Finalizar</button>
+         </div>
       </div>
-        <table width="100%" class="table-hover table-bordered" id="ordenes_finalizadas_lab_envs"  data-order='[[ 0, "desc" ]]'> 
+        <table width="100%" class="table-hover table-bordered" id="ordenes_finalizadas_lab"  data-order='[[ 0, "desc" ]]'> 
               
          <thead class="style_th bg-dark" style="color: white">
            <th>ID</th>
            <th>Codigo</th>
-           <th>Fecha Env.</th>
+           <th>Fecha Fin.</th>
            <th>Paciente</th>
            <th>Tipo lente</th>
            <th>Detalles</th>
@@ -113,7 +120,7 @@ $categoria_usuario = $_SESSION["categoria"];
       </div>
     </div>
   </div>
-
+  <input type="hidden" id="cat_data_barcode" value="finalizar_orden_lab_completo">
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <strong>2021 Lenti || <b>Version</b> 1.0</strong>

@@ -83,6 +83,47 @@ require_once("../config/conexion.php");
     }
   }
 
+////////////////////////////ORDENES FINALIZADAS  LABORATORIOS////////////////////
+    public function finalizarOrdenesLabEnviar(){
+    $conectar= parent::conexion();
+    parent::set_names();
+    date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H:i:s");
+    $detalle_finalizados = array();
+    $detalle_finalizados = json_decode($_POST["arrayOrdenesBarcode"]);
+    $usuario = $_POST["usuario"];
+
+    foreach ($detalle_finalizados as $k => $v) {
+      
+      $codigoOrden = $v->n_orden;
+      $accion = "Envio Lab";
+      $destino = "-";
+
+      $sql2 = "update orden_lab set estado_aro='4' where codigo=?;";
+      $sql2=$conectar->prepare($sql2);
+      $sql2->bindValue(1, $codigoOrden);
+      $sql2->execute();
+
+      $sql = "insert into acciones_orden values(null,?,?,?,?,?);";
+      $sql=$conectar->prepare($sql);
+      $sql->bindValue(1, $hoy);
+      $sql->bindValue(2, $usuario);
+      $sql->bindValue(3, $codigoOrden);
+      $sql->bindValue(4, $accion);
+      $sql->bindValue(5, $destino);
+      $sql->execute();
+    }
+  }
+
+
+  public function get_ordeOrdenesFinalizadasEnviar(){
+    $conectar= parent::conexion();
+    parent::set_names();
+    $sql= "select o.id_orden,o.codigo,a.fecha,o.paciente,o.tipo_lente,o.img from orden_lab as o INNER JOIN acciones_orden as a on a.codigo=o.codigo where o.estado_aro='4' and a.tipo_accion='Envio Lab';;";
+    $sql=$conectar->prepare($sql);
+    $sql->execute();
+    return $resultado= $sql->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function get_ordeOrdenesFinalizadas(){
     $conectar= parent::conexion();
     parent::set_names();
