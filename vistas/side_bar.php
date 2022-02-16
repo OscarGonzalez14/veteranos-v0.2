@@ -16,7 +16,7 @@
             </a>
             <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="ordenes_recibidas_veteranos.php" class="nav-link">
+              <a href="orden.php" class="nav-link">
                 <i class="far fa-circle nav-icon text-info"></i>
                   <p>Ordenes</p>
                 </a>

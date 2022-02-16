@@ -1,6 +1,10 @@
 function init(){
     listar_ordenes_procesando_lab();
     get_ordenes_procesando();
+    ///get_ordenes_recibidas_lab();
+    listar_ordenes_rec_vet();
+    listar_ordenes_entregas_vet()
+
 }
 
 $(".modal-header").on("mousedown", function(mousedownEvt) {
@@ -21,11 +25,20 @@ $(".modal-header").on("mousedown", function(mousedownEvt) {
     });
   
 });
-
+/////////////////detectar clic en acciones labs
 document.querySelectorAll(".barcode_actions").forEach(i => i.addEventListener("click", e => {
     items_barcode = [];
     document.getElementById('items-ordenes-barcode').innerHTML='';
     input_focus_clearb();
+}));
+
+///////////////// detectar clic en acciones veteranos
+document.querySelectorAll(".barcode_actions_vets").forEach(i => i.addEventListener("click", e => {
+    items_barcode = [];    
+    input_focus_clearb();
+    getCorrelativoAccionVet();
+    $("#ubicacion_veteranos").val("");
+
 }));
 
 function listar_ordenes_pend_lab(){
@@ -422,8 +435,22 @@ function get_ordenes_procesando(){
   });
 }
 
-//////////////////////CONTRO DE INGRESOS LAB Y VETERANOS UES ///////////
+//////////////////////CONTROL DE INGRESOS LAB Y VETERANOS UES ///////////
 var items_barcode = [];
+
+function getCorrelativoAccionVet(){
+    $.ajax({
+    url:"../ajax/laboratorios.php?op=get_correlativo_accion_vet",
+    method:"POST",
+    cache:false,
+    dataType:"json",
+      success:function(data){
+        console.log(data)    
+        $("#correlativo_acc_vet").val(data.correlativo);             
+      }
+    })
+}
+
 function getOrdenBarcode(){
 
   let cod_orden_act = $("#reg_ingresos_barcode").val();
@@ -528,7 +555,7 @@ function registrarBarcodeOrdenes(){
   var ubicacion_orden = ''
 
   if(tipo_accion=='recibir_veteranos'){
-    fecha_orden = $("#fecha_accion_vet").val();
+    //fecha_orden = $("#fecha_accion_vet").val();
     ubicacion_orden = $("#ubicacion_veteranos").val();
     
     if (ubicacion_orden=='') {
@@ -542,10 +569,11 @@ function registrarBarcodeOrdenes(){
       return false;
     }
   }
-
+ 
   let usuario = $("#usuario").val();
+  let correlativo_accion = $("#correlativo_acc_vet").val();
   let n_ordenes = items_barcode.length;
-
+  console.log(correlativo_accion); 
   if (n_ordenes==0) {
       Swal.fire({
         position: 'top-center',
@@ -560,10 +588,11 @@ function registrarBarcodeOrdenes(){
   $.ajax({
       url:"../ajax/laboratorios.php?op=procesar_ordenes_barcode",
       method:"POST",
-      data : {'arrayOrdenesBarcode':JSON.stringify(items_barcode),'usuario':usuario,'tipo_accion':tipo_accion,'fecha_orden':fecha_orden,'ubicacion_orden':ubicacion_orden},
+      data : {'arrayOrdenesBarcode':JSON.stringify(items_barcode),'usuario':usuario,'tipo_accion':tipo_accion,'ubicacion_orden':ubicacion_orden,'correlativo_accion':correlativo_accion},
       cache:false,
       dataType:"json",
       success:function(data){
+      console.log(data);
       if (tipo_accion=='ing_lab') {
         msj =' ordenes recibidas exitosamente';
       }else if(tipo_accion=='finalizar_lab'){
@@ -572,6 +601,11 @@ function registrarBarcodeOrdenes(){
       }else if(tipo_accion=='recibir_veteranos'){
         msj = ' ordenes recibidas exitosamente';
         $('#modal_acciones_veteranos').modal('hide');
+        $("#ordenes_recibidas_veteranos_data").DataTable().ajax.reload();
+      }else if (tipo_accion=='entregar_veteranos') {
+        msj = ' ordenes entregadas exitosamente';
+        $('#barcode_ingresos_lab').modal('hide');
+        $("#ordenes_entregados_veteranos_data").DataTable().ajax.reload();
       }
         
       items_barcode = [];
@@ -586,15 +620,109 @@ function registrarBarcodeOrdenes(){
 
     }//Fin success
     });
-
 }
 
+function listar_ordenes_rec_vet(){
+  table_proces = $('#ordenes_recibidas_veteranos_data').DataTable({      
+    "aProcessing": true,//Activamos el procesamiento del datatables
+    "aServerSide": true,//Paginación y filtrado realizados por el servidor
+    dom: 'frtip',//Definimos los elementos del control de tabla
+    //buttons: ['excelHtml5'],
+    "ajax":{
+      url:"../ajax/laboratorios.php?op=listar_ordenes_recibidas_veteranos",
+      type : "POST",
+      dataType : "json",
+      error: function(e){
+      console.log(e.responseText);
+    },},
+    "bDestroy": true,
+    "responsive": true,
+    "bInfo":true,
+    "iDisplayLength": 20,//Por cada 10 registros hace una paginación
+    "order": [[ 0, "desc" ]],//Ordenar (columna,orden)
+      "language": { 
+      "sProcessing":     "Procesando...",       
+      "sLengthMenu":     "Mostrar _MENU_ registros",       
+      "sZeroRecords":    "No se encontraron resultados",       
+      "sEmptyTable":     "Ningún dato disponible en esta tabla",       
+      "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",       
+      "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",       
+      "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",       
+      "sInfoPostFix":    "",       
+      "sSearch":         "Buscar:",       
+      "sUrl":            "",       
+      "sInfoThousands":  ",",       
+      "sLoadingRecords": "Cargando...",       
+      "oPaginate": {       
+      "sFirst":"Primero","sLast":"Último","sNext":"Siguiente","sPrevious": "Anterior"       
+      },      
+      "oAria": {       
+        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",       
+        "sSortDescending": ": Activar para ordenar la columna de manera descendente"       
+      }
+    }, //cerrando language
+  });
+}
 
+function listar_ordenes_entregas_vet(){
+  table_proces = $('#ordenes_entregados_veteranos_data').DataTable({      
+    "aProcessing": true,//Activamos el procesamiento del datatables
+    "aServerSide": true,//Paginación y filtrado realizados por el servidor
+    dom: 'frtip',//Definimos los elementos del control de tabla
+    //buttons: ['excelHtml5'],
+    "ajax":{
+      url:"../ajax/laboratorios.php?op=listar_ordenes_entregadas_veteranos",
+      type : "POST",
+      dataType : "json",
+      error: function(e){
+      console.log(e.responseText);
+    },},
+    "bDestroy": true,
+    "responsive": true,
+    "bInfo":true,
+    "iDisplayLength": 20,//Por cada 10 registros hace una paginación
+    "order": [[ 0, "desc" ]],//Ordenar (columna,orden)
+      "language": { 
+      "sProcessing":     "Procesando...",       
+      "sLengthMenu":     "Mostrar _MENU_ registros",       
+      "sZeroRecords":    "No se encontraron resultados",       
+      "sEmptyTable":     "Ningún dato disponible en esta tabla",       
+      "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",       
+      "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",       
+      "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",       
+      "sInfoPostFix":    "",       
+      "sSearch":         "Buscar:",       
+      "sUrl":            "",       
+      "sInfoThousands":  ",",       
+      "sLoadingRecords": "Cargando...",       
+      "oPaginate": {       
+      "sFirst":"Primero","sLast":"Último","sNext":"Siguiente","sPrevious": "Anterior"       
+      },      
+      "oAria": {       
+        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",       
+        "sSortDescending": ": Activar para ordenar la columna de manera descendente"       
+      }
+    }, //cerrando language
+  });
+}
 function input_focus_clearb(){
   $("#reg_ingresos_barcode").val("");
   $('#modal_acciones_veteranos').on('shown.bs.modal', function() {
   $('#reg_ingresos_barcode').focus();
   });
+}
+
+function downloadExcelEntregas(title,fecha){
+  let titulo = fecha+"_"+title;
+  let tablaExport = document.getElementById("tabla_acciones_veterans");
+  console.log(tablaExport);
+  if(tablaExport == null || tablaExport == undefined ){
+    alerts_productos("warning", "Debe desplegar la tabla para poder ser descargada");
+    return false;
+  }
+
+  let table2excel = new Table2Excel();
+  table2excel.export(document.getElementById('tabla_acciones_veterans'),titulo);
 }
 
 init();

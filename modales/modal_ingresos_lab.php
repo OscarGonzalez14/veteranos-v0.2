@@ -10,8 +10,8 @@
         <!-- Modal body -->
         <div class="modal-body">
           <input type="text" class="form-control" id="reg_ingresos_barcode" onchange="getOrdenBarcode()">
-          
-          <table class="table-hover table-bordered" style="font-family: Helvetica, Arial, sans-serif;max-width: 100%;text-align: left;margin-top: 5px !important" width="100%">
+          <button type="button" class="btn btn-tool float-right" onClick="downloadExcelEntregas('Envio','<?php echo $hoy;?>')" style='margin: 3px'><i class="fas fa-file-excel fa-2x" style="color: green"></i></button>
+          <table class="table-hover table-bordered" style="font-family: Helvetica, Arial, sans-serif;max-width: 100%;text-align: left;margin-top: 5px !important" width="100%" id="tabla_acciones_veterans">
 
           <thead style="font-family: Helvetica, Arial, sans-serif;width: 100%;text-align: center;font-size: 12px;" class="bg-dark">
             <th>#</th>

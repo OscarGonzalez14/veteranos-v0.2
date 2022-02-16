@@ -13,7 +13,7 @@ $categoria_usuario = $_SESSION["categoria"];
     require_once('../modelos/Ordenes.php');
     $ordenes = new Ordenes();
     $suc = $ordenes->get_opticas();
-    require_once('../modales/modal_acciones_veteranos.php');
+    require_once('../modales/modal_ingresos_lab.php');
     require_once('../modales/nueva_orden_lab.php');
     require_once('../modales/aros_en_orden.php');
 ?>
@@ -43,19 +43,18 @@ $categoria_usuario = $_SESSION["categoria"];
 
       <?php include 'ordenes/header_status_veteranos.php'; ?>
 
-        <button class="btn btn-info barcode_actions_vets float-right" data-toggle="modal" data-target="#modal_acciones_veteranos" onClick='input_focus_clearb()' style="border: solid 1px #1f2e50"><i class="fas fa-download"></i> Recibir</button>
-        <h5 style="font-size: 16px; text-align: center;font-weight: bold;color: blue">ORDENES RECIBIDAS</h5>
-        <table width="100%" class="table-hover table-bordered" id="ordenes_recibidas_veteranos_data"  data-order='[[ 0, "desc" ]]'> 
+        <button class="btn btn-success barcode_actions_vets float-right barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()' style="border: solid 1px #1f2e50"><i class="fas fa-upload"></i> Entregar</button>
+        <h5 style="font-size: 16px; text-align: center;font-weight: bold;color: green">ORDENES ENTREGADAS</h5>
+        <table width="100%" class="table-hover table-bordered" id="ordenes_entregados_veteranos_data"  data-order='[[ 0, "desc" ]]'> 
               
-          <thead class="style_th bg-dark" style="color: white">
+         <thead class="style_th bg-dark" style="color: white">
            <th>ID</th>
-           <th>Fecha rec.</th>
+           <th>Fecha Ent.</th>
            <th># Orden</th>
-           <th>Recibido por</th>
+           <th>Entregado por</th>
            <th>Paciente</th>
            <th>DUI</th>
            <th>Tipo lente</th>
-           <th>Ubicación</th>
            <th>Detalles</th>
          </thead>
          <tbody class="style_th"></tbody>
@@ -84,7 +83,7 @@ $categoria_usuario = $_SESSION["categoria"];
       </div>
     </div>
   </div>
-  <input type="hidden" id="cat_data_barcode" value="recibir_veteranos">
+  <input type="hidden" id="cat_data_barcode" value="entregar_veteranos">
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <strong>2021 Lenti || <b>Version</b> 1.0</strong>

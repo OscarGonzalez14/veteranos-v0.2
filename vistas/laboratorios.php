@@ -17,8 +17,7 @@ require_once('../modales/modal_ingresos_lab.php');
 require_once('../modales/nueva_orden_lab.php');
 require_once('../modales/aros_en_orden.php');
 
-
- ?>
+?>
 <style>
   .buttons-excel{
       /*background-color: green !important;*/

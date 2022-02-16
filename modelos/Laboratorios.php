@@ -132,6 +132,27 @@ require_once("../config/conexion.php");
   }
 
 
+  
+  public function get_correlativo_accion_veteranos(){
+    $conectar= parent::conexion();
+    parent::set_names();
+    
+    $sql = 'select correlativo_accion from acciones_ordenes_veteranos order by id_orden_rec DESC limit 1;';
+    $sql=$conectar->prepare($sql);
+    $sql->execute();
+    return $resultado= $sql->fetchAll(PDO::FETCH_ASSOC);
+      
+  }
+
+  public function compruebaCorrelativo($correlativo_accion){
+    $conectar= parent::conexion();
+    parent::set_names();
+    $sql = 'select correlativo_accion from acciones_ordenes_veteranos where correlativo_accion=?;';
+    $sql=$conectar->prepare($sql);
+    $sql->bindValue(1, $correlativo_accion);
+    $sql->execute();
+    return $resultado= $sql->fetchAll(PDO::FETCH_ASSOC);
+  }
 
   public function recibirOrdenesVeteranos(){
     $conectar= parent::conexion();
@@ -141,17 +162,20 @@ require_once("../config/conexion.php");
     $hora = date('H:i:s');
     $detalle_recibidos = array();
     $detalle_recibidos = json_decode($_POST["arrayOrdenesBarcode"]);
+
     $usuario = $_POST["usuario"];
     $tipo_accion = $_POST['tipo_accion'];
     $ubicacion = $_POST['ubicacion_orden'];
+    $correlativo = $_POST["correlativo_accion"];
 
-    $estado ='';
-    
-    if ($tipo_accion == 'recibir_veteranos') {
-       $estado = 'Recibido';
+    //$tipo_accion == 'recibir_veteranos'? ($estado ='Recibido'; $accion = 'Ingreso'): ($estado='Entregado'; $accion='Entrega');
+    if ($tipo_accion=='recibir_veteranos') {
+      $estado ='Recibido'; $accion = 'Ingreso';
+    }elseif ($tipo_accion=='entregar_veteranos') {
+      $estado='Entregado'; $accion='Entrega';
     }
-    $correlativo = 12345;
-    $accion = 'Ingreso';
+    
+
     $sql = 'insert into acciones_ordenes_veteranos values(null,?,?,?,?,?,?);';
     $sql=$conectar->prepare($sql);
     $sql->bindValue(1, $correlativo);
@@ -162,26 +186,41 @@ require_once("../config/conexion.php");
     $sql->bindValue(6, $ubicacion);
     $sql->execute();
 
-    /*foreach ($detalle_recibidos as $k => $v) {
-      
+    foreach ($detalle_recibidos as $k => $v) {      
       $codigoOrden = $v->n_orden;
 
-      $sql2 = "update orden_lab set estado_aro='2' where codigo=?;";
+      $sql2 = "insert into detalle_acciones_veteranos values(null,?,?,?);";
       $sql2=$conectar->prepare($sql2);
       $sql2->bindValue(1, $codigoOrden);
+      $sql2->bindValue(2, $correlativo);
+      $sql2->bindValue(3, $estado);
       $sql2->execute();
-
-      $sql = "insert into acciones_orden values(null,?,?,?,?,?);";
-      $sql=$conectar->prepare($sql);
-      $sql->bindValue(1, $hoy);
-      $sql->bindValue(2, $usuario);
-      $sql->bindValue(3, $codigoOrden);
-      $sql->bindValue(4, $accion);
-      $sql->bindValue(5, $destino);
-      $sql->execute();
-    }*/
+    }
+    if ($tipo_accion=='entregar_veteranos') {
+      $sql3 = 'update detalle_acciones_veteranos set estado="Entregado" where codigo_orden=?;';
+      $sql3=$conectar->prepare($sql3);
+      $sql3->bindValue(1, $codigoOrden);
+      $sql3->execute();
+    }
+  }
+  
+  public function listarOrdenesRecibidasVeteranos(){
+       $conectar= parent::conexion();
+    parent::set_names();
+    $sql = 'select o.paciente,o.dui,d.codigo_orden,a.fecha,a.hora,a.usuario,a.ubicacion,o.tipo_lente,d.id_detalle_accion from orden_lab as o inner join detalle_acciones_veteranos as d on  o.codigo=d.codigo_orden INNER join acciones_ordenes_veteranos as a on a.correlativo_accion=d.correlativo_accion where d.estado="Recibido";';
+    $sql=$conectar->prepare($sql);
+    $sql->execute();
+    return $resultado= $sql->fetchAll(PDO::FETCH_ASSOC); 
   }
 
+  public function listarOrdenesEntregadasVeteranos(){
+       $conectar= parent::conexion();
+    parent::set_names();
+    $sql = 'select o.paciente,o.dui,d.codigo_orden,a.fecha,a.hora,a.usuario,a.ubicacion,o.tipo_lente,d.id_detalle_accion from orden_lab as o inner join detalle_acciones_veteranos as d on  o.codigo=d.codigo_orden INNER join acciones_ordenes_veteranos as a on a.correlativo_accion=d.correlativo_accion where a.tipo_acccion="Entrega" and d.estado="Entregado";';
+    $sql=$conectar->prepare($sql);
+    $sql->execute();
+    return $resultado= $sql->fetchAll(PDO::FETCH_ASSOC); 
+  }
 
 }
 

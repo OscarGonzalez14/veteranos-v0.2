@@ -121,18 +121,98 @@ case 'get_ordenes_pendientes_lab':
     break;
 
     ///////////////BARCODE PROCESOS //////////
+    case 'get_correlativo_accion_vet':
+
+    $correlativo = $ordenes->get_correlativo_accion_veteranos();
+
+    if (is_array($correlativo)==true and count($correlativo)>0) {
+      foreach($correlativo as $row){                  
+        $codigo = $row["correlativo_accion"];
+        $cod = (substr($codigo,2,11))+1;
+        $output["correlativo"] = "A-".$cod;
+      }
+    }else{
+        $output["correlativo"] = "A-1";
+    }
+    echo json_encode($output);
+    break;
+//////////////////PROCESAR ORDENES BARCODE /////////////
     case 'procesar_ordenes_barcode':
+
     if ($_POST['tipo_accion']=='ing_lab') {
       $ordenes->recibirOrdenesLabBarcode();
       $mensaje = "Ok";
     }elseif ($_POST['tipo_accion']=='finalizar_lab') {///FINALIZAR LAB
       $ordenes->finalizarOrdenesLab();
       $mensaje = "Ok";
-    }elseif ($_POST['tipo_accion']=='recibir_veteranos') {
-      $ordenes->recibirOrdenesVeteranos();
-      $mensaje = "Ok";
+    }elseif ($_POST['tipo_accion']=='recibir_veteranos' or $_POST['tipo_accion']=='entregar_veteranos') {
+      $comprobar_correlativo = $ordenes->compruebaCorrelativo($_POST['correlativo_accion']);
+      if(is_array($comprobar_correlativo)==true and count($comprobar_correlativo)==0){
+         $ordenes->recibirOrdenesVeteranos();
+         $mensaje = "Ok";
+      }else{
+         $mensaje = 'Error';
+      }     
     }
+
     echo json_encode($mensaje);    
+    break;
+
+    case 'listar_ordenes_recibidas_veteranos':
+    $data = Array();
+    $i=0;
+    $datos = $ordenes->listarOrdenesRecibidasVeteranos();
+    foreach ($datos as $row) { 
+    $sub_array = array();
+
+    $sub_array[] = $row["id_detalle_accion"];
+    $sub_array[] = date("d-m-Y",strtotime($row["fecha"]))." ".$row["hora"];
+    $sub_array[] = $row["codigo_orden"];
+    $sub_array[] = $row["usuario"];
+    $sub_array[] = $row["paciente"];
+    $sub_array[] = $row["dui"];
+    $sub_array[] = $row["tipo_lente"];
+    $sub_array[] = $row["ubicacion"];
+    $sub_array[] = '<button type="button"  class="btn btn-sm bg-light" onClick="verEditar(\''.$row["codigo_orden"].'\',\''.$row["paciente"].'\')"><i class="fa fa-eye" aria-hidden="true" style="color:blue"></i></button>';  
+    //$sub_array[] = '<i class="fas fa-image fa-2x" aria-hidden="true" style="color:blue" onClick="verImg(\''.$row["img"].'\',\''.$row["codigo"].'\',\''.$row["paciente"].'\')">';               
+                                          
+    $data[] = $sub_array;
+    }
+    
+    $results = array(
+        "sEcho"=>1, //Información para el datatables
+        "iTotalRecords"=>count($data), //enviamos el total registros al datatable
+        "iTotalDisplayRecords"=>count($data), //enviamos el total registros a visualizar
+        "aaData"=>$data);
+      echo json_encode($results);
+    break;
+
+    case 'listar_ordenes_entregadas_veteranos':
+    $data = Array();
+    $i=0;
+    $datos = $ordenes->listarOrdenesEntregadasVeteranos();
+    foreach ($datos as $row) { 
+    $sub_array = array();
+
+    $sub_array[] = $row["id_detalle_accion"];
+    $sub_array[] = date("d-m-Y",strtotime($row["fecha"]))." ".$row["hora"];
+    $sub_array[] = $row["codigo_orden"];
+    $sub_array[] = $row["usuario"];
+    $sub_array[] = $row["paciente"];
+    $sub_array[] = $row["dui"];
+    $sub_array[] = $row["tipo_lente"];
+    $sub_array[] = '<button type="button"  class="btn btn-sm bg-light" onClick="verEditar(\''.$row["codigo_orden"].'\',\''.$row["paciente"].'\')"><i class="fa fa-eye" aria-hidden="true" style="color:blue"></i></button>';  
+    //$sub_array[] = '<i class="fas fa-image fa-2x" aria-hidden="true" style="color:blue" onClick="verImg(\''.$row["img"].'\',\''.$row["codigo"].'\',\''.$row["paciente"].'\')">';               
+                                          
+    $data[] = $sub_array;
+    }
+    
+    $results = array(
+        "sEcho"=>1, //Información para el datatables
+        "iTotalRecords"=>count($data), //enviamos el total registros al datatable
+        "iTotalDisplayRecords"=>count($data), //enviamos el total registros a visualizar
+        "aaData"=>$data);
+      echo json_encode($results);
     break;
 
 }

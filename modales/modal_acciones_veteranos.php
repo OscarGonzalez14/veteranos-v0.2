@@ -17,7 +17,7 @@
         </div>
         <div class="col-sm-8">
           <label for="">Ubicación</label>
-          <input type="text" class="form-control" id="ubicacion_veteranos" placeholder="Ubicación">
+          <input type="text" class="form-control" id="ubicacion_veteranos" placeholder="Ubicación" style="text-transform: uppercase;">
         </div>
       </div>
         
