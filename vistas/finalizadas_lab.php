@@ -49,7 +49,7 @@ date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H-i-s");
       <div class="row">
         <div class="col-sm-10"><h5 style="text-align: center">ORDENES FINALIZADAS</h5></div>
         <div class="col-sm-2 float-right" style="margin-bottom: 5px !important">         
-         <button class="btn btn-success" class="btn btn-info barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()'><i class="fas fa-shipping-fast"></i> Finalizar</button>
+         <button class="btn btn-success" class="btn btn-info barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()'><i class="fas fa-shipping-fast"></i> Enviar</button>
          </div>
       </div>
         <table width="100%" class="table-hover table-bordered" id="ordenes_finalizadas_lab"  data-order='[[ 0, "desc" ]]'> 
@@ -121,6 +121,7 @@ date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H-i-s");
     </div>
   </div>
   <input type="hidden" id="cat_data_barcode" value="finalizar_orden_lab_completo">
+  <input type="hidden" id='fecha_envios_veteranos_i' value="<?php echo $hoy; ?>">
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <strong>2021 Lenti || <b>Version</b> 1.0</strong>

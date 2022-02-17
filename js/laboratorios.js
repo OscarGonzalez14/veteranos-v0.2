@@ -654,9 +654,12 @@ function registrarBarcodeOrdenes(){
         msj = ' ordenes finalizadas';
         $('#barcode_ingresos_lab').modal('hide');
         $("#ordenes_finalizadas_lab").DataTable().ajax.reload();
+        let title = "Ordenes Enviadas";
+        let fecha = $("#fecha_envios_veteranos_i").val();
+        downloadExcelEntregas(title,fecha)
       }
         
-      items_barcode = [];
+      //items_barcode = [];
       $("#barcode_ingresos_lab").modal("hide");
       Swal.fire({
       position: 'top-center',
