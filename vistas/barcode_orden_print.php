@@ -62,7 +62,3 @@ $dompdf->stream('document', array('Attachment'=>'0'));
 ?>
 
 
-Copy the token.
-Switch back to VS code.
-Click Signing in to github.com... in the status bar.
-Paste the token and hit enter.
