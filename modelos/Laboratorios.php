@@ -87,10 +87,25 @@ require_once("../config/conexion.php");
     public function finalizarOrdenesLabEnviar(){
     $conectar= parent::conexion();
     parent::set_names();
-    date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H:i:s");
+    date_default_timezone_set('America/El_Salvador');
+    $hoy = date("Y-m-d");
+    $hora = date('H:i:s');
     $detalle_finalizados = array();
     $detalle_finalizados = json_decode($_POST["arrayOrdenesBarcode"]);
     $usuario = $_POST["usuario"];
+    $accion = 'Despacho lab';
+    $ubicacion = '';
+
+    $correlativo = $_POST["correlativo_accion"];
+    $sql = 'insert into acciones_ordenes_veteranos values(null,?,?,?,?,?,?);';
+    $sql=$conectar->prepare($sql);
+    $sql->bindValue(1, $correlativo);
+    $sql->bindValue(2, $hoy);
+    $sql->bindValue(3, $hora);
+    $sql->bindValue(4, $usuario);
+    $sql->bindValue(5, $accion);
+    $sql->bindValue(6, $ubicacion);
+    $sql->execute();
 
     foreach ($detalle_finalizados as $k => $v) {
       
@@ -111,6 +126,16 @@ require_once("../config/conexion.php");
       $sql->bindValue(4, $accion);
       $sql->bindValue(5, $destino);
       $sql->execute();
+      
+      $est_det = 'Despachado lab';
+      $sql2 = "insert into detalle_acciones_veteranos values(null,?,?,?);";
+      $sql2=$conectar->prepare($sql2);
+      $sql2->bindValue(1, $codigoOrden);
+      $sql2->bindValue(2, $correlativo);
+      $sql2->bindValue(3, $est_det);
+      $sql2->execute();
+
+
     }
   }
 

@@ -31,6 +31,7 @@ date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H-i-s");
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style='font-family: Helvetica, Arial, sans-serif;'>
 <div class="wrapper">
+<input type="hidden" id="correlativo_acc_vet" name="correlativo_acc_vet">
 <!-- top-bar -->
   <?php require_once('top_menu.php')?>
   <?php require_once('side_bar.php')?>
@@ -49,7 +50,7 @@ date_default_timezone_set('America/El_Salvador'); $hoy = date("d-m-Y H-i-s");
       <div class="row">
         <div class="col-sm-10"><h5 style="text-align: center">ORDENES FINALIZADAS</h5></div>
         <div class="col-sm-2 float-right" style="margin-bottom: 5px !important">         
-         <button class="btn btn-success" class="btn btn-info barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()'><i class="fas fa-shipping-fast"></i> Enviar</button>
+         <button class="btn btn-success barcode_actions" class="btn btn-info barcode_actions" data-toggle="modal" data-target="#barcode_ingresos_lab" onClick='input_focus_clearb()'><i class="fas fa-shipping-fast"></i> Enviar</button>
          </div>
       </div>
         <table width="100%" class="table-hover table-bordered" id="ordenes_finalizadas_lab"  data-order='[[ 0, "desc" ]]'> 

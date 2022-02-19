@@ -29,6 +29,8 @@ $(".modal-header").on("mousedown", function(mousedownEvt) {
 /////////////////detectar clic en acciones labs
 document.querySelectorAll(".barcode_actions").forEach(i => i.addEventListener("click", e => {
     items_barcode = [];
+    getCorrelativoAccionVet();
+    document.getElementById('reportes_vets').style.display = 'none';
     document.getElementById('items-ordenes-barcode').innerHTML='';
     input_focus_clearb();
 }));
@@ -490,7 +492,9 @@ function getCorrelativoAccionVet(){
     dataType:"json",
       success:function(data){
         console.log(data)    
-        $("#correlativo_acc_vet").val(data.correlativo);             
+        $("#correlativo_acc_vet").val(data.correlativo);
+        $("#c_accion").html('OP '+data.correlativo);
+
       }
     })
 }
@@ -564,7 +568,9 @@ function show_items_barcode_lab(){
 $("#items-ordenes-barcode").html('');
 
   let filas = "";
-  for(let i=0;i<items_barcode.length;i++){
+  let length_array = parseInt(items_barcode.length)-1;
+  for(let i=length_array;i>=0;i--){
+
     filas = filas +    
     "<tr style='text-align:center' id='item_t"+i+"'>"+
     "<td>"+(i+1)+"</td>"+
@@ -651,16 +657,14 @@ function registrarBarcodeOrdenes(){
         $('#barcode_ingresos_lab').modal('hide');
         $("#ordenes_entregados_veteranos_data").DataTable().ajax.reload();
       }else if (tipo_accion=='finalizar_orden_lab_completo') {
-        msj = ' ordenes finalizadas';
-        $('#barcode_ingresos_lab').modal('hide');
+        msj = ' ordenes enviadas';
+        document.getElementById('reportes_vets').style.display = 'block';
         $("#ordenes_finalizadas_lab").DataTable().ajax.reload();
-        let title = "Ordenes Enviadas";
-        let fecha = $("#fecha_envios_veteranos_i").val();
-        downloadExcelEntregas(title,fecha)
-      }
+
+       }
         
-      //items_barcode = [];
-      $("#barcode_ingresos_lab").modal("hide");
+      items_barcode = [];
+      //$("#barcode_ingresos_lab").modal("hide");
       Swal.fire({
       position: 'top-center',
       icon: 'success',
@@ -788,6 +792,27 @@ function downloadExcelRecibidosVet(title,fecha){
   }
   let table2excel = new Table2Excel();
   table2excel.export(document.getElementById('recibidas_ordenes_lab'),titulo);
+}
+
+function imprimirEnviosLabPDF(){
+
+  let correlativo = $("#correlativo_acc_vet").val();
+
+  var form = document.createElement("form");
+  form.target = "blank";
+  form.method = "POST";
+  form.action = "imprimirDespachoLabPdf.php";
+  
+  var input = document.createElement("input");
+  input.type = "hidden";
+  input.name = "correlativos_acc";
+  input.value = correlativo;
+  form.appendChild(input);
+  document.body.appendChild(form);//"width=600,height=500"
+
+  form.submit();
+  document.body.removeChild(form);
+ 
 }
 
 init();
